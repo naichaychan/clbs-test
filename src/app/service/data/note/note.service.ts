@@ -13,11 +13,11 @@ export class NoteService {
   constructor(private httpService: HttpService) { }
 
 
-  async getNote(): Promise<Observable<any>> {
+  async getNotes(): Promise<Observable<any>> {
     return this.httpService.get(this.urlNote);
   }
 
-  async getNoteLabel(): Promise<Observable<any>> {
+  async getNoteLabels(): Promise<Observable<any>> {
     return this.httpService.get(this.urlNoteLabel);
   }
 

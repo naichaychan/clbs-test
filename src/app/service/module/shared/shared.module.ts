@@ -9,12 +9,16 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
+  ],
+  exports:[
+
     MatFormFieldModule,
     FormsModule,
     MatInputModule,
@@ -23,7 +27,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatCardModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressSpinnerModule
   ]
 })
 export class SharedModule { }

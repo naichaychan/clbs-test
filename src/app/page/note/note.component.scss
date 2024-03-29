@@ -1,0 +1,56 @@
+/* styles.css */
+
+/* Global styles */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* Card styles */
+.note-card {
+  width: 300px;
+  margin: 10px;
+}
+
+.label-card {
+  margin-bottom: 20px;
+}
+
+/* Edit dialog styles */
+mat-dialog-content {
+  max-width: 400px;
+  padding: 20px;
+}
+
+/* Optional: Add your custom styles here */
+.circle-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.circle {
+  width: 25px; /* Adjust as needed */
+  height: 25px; /* Adjust as needed */
+  border-radius: 50%;
+  background-color: white;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black; /* Black circle border */
+  margin-right: 10px; /* Adjust as needed */
+}
+
+.circle + p {
+  margin: 0;
+}
+
+p{
+  margin-bottom: 0px;
+}

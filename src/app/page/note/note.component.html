@@ -1,0 +1,44 @@
+<mat-toolbar color="primary">
+  <span>Weekly Notes</span>
+  <span class="spacer"></span>
+  <button mat-button class="week-switch">Previous Week</button>
+  <button mat-button class="week-switch">Next Week</button>
+  <mat-form-field appearance="fill">
+    <mat-label>Filter Labels</mat-label>
+    <mat-select [(value)]="selectedLabel">
+      <mat-option value="-1">All</mat-option>
+      <mat-option [value]="label.id" *ngFor="let label of noteLabels">{{label.text}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-toolbar>
+
+<div class="calendar-wrapper">
+  <div class="calendar">
+    <div class="week">
+      <div class="day" *ngFor="let day of daysInWeek">
+        <div class="day-header">{{ day }}</div>
+        <div class="notes">
+          <mat-card *ngFor="let note of getNotesByLabelAndDay(selectedLabel, day)" class="note-card" (click)="openEditDialog(note)">
+            <mat-card-content>
+              <div class="circle-wrapper">
+                <div class="circle">{{ note.id }}</div>
+                <p><strong>{{ note.title }}</strong></p>
+              </div>
+              <p>{{ note.summary }}</p>
+              <br>
+              <p>Start Date: {{ timestampToDate(note.startDate) | date: 'dd/MM/yyyy'}}</p>
+              <p>Duration: {{ getDuration(note.startDate,note.endDate)}} days</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<mat-dialog-content *ngIf="selectedNote">
+  <!-- Edit dialog content goes here -->
+  asdf
+</mat-dialog-content>
+
+<app-progress-spiner [displayProgressSpinner]="loading"></app-progress-spiner>
