@@ -1,44 +1,94 @@
 <mat-toolbar color="primary">
   <span>Weekly Notes</span>
   <span class="spacer"></span>
-  <button mat-button class="week-switch">Previous Week</button>
-  <button mat-button class="week-switch">Next Week</button>
   <mat-form-field appearance="fill">
     <mat-label>Filter Labels</mat-label>
-    <mat-select [(value)]="selectedLabel">
+    <mat-select [(value)]="selectedLabel" (selectionChange)="onLabelChange()">
       <mat-option value="-1">All</mat-option>
       <mat-option [value]="label.id" *ngFor="let label of noteLabels">{{label.text}}</mat-option>
     </mat-select>
   </mat-form-field>
+  <button mat-button class="week-switch" (click)="fetchPreviousWeek()">Previous Week</button>
+  <button mat-button class="week-switch" (click)="fetchNextWeek()">Next Week</button>
 </mat-toolbar>
+<ng-container>
+  <div class="calendar-wrapper">
+    <table class="calendar">
+      <thead>
+        <tr>
+          <th>Label</th>
+          <ng-container *ngFor="let day of displayedWeek">
+            <th>{{ day | date: 'dd/MM/YYYY' }}</th>
+          </ng-container>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="selectedLabel == -1; else singleLabelRow">
+          <tr  [style.height.px]="calculateRowHeight(label.id)" *ngFor="let label of noteLabels;let r = index">
+            <td>{{ label.text }}</td>
+            <ng-container *ngFor="let day of displayedWeek">
+              <td>
+                <div class="notes">
+                  <ng-container *ngFor="let note of getNotesByLabelAndDay(label.id, day); let i = index">
+                    <mat-card class="note-card" (click)="openEditDialog(note)"  [style.top.px]="(i * 10)-70" [style.left.px]="i * 10">
+                      <mat-card-content>
 
-<div class="calendar-wrapper">
-  <div class="calendar">
-    <div class="week">
-      <div class="day" *ngFor="let day of daysInWeek">
-        <div class="day-header">{{ day }}</div>
-        <div class="notes">
-          <mat-card *ngFor="let note of getNotesByLabelAndDay(selectedLabel, day)" class="note-card" (click)="openEditDialog(note)">
-            <mat-card-content>
-              <div class="circle-wrapper">
-                <div class="circle">{{ note.id }}</div>
-                <p><strong>{{ note.title }}</strong></p>
-              </div>
-              <p>{{ note.summary }}</p>
-              <br>
-              <p>Start Date: {{ timestampToDate(note.startDate) | date: 'dd/MM/yyyy'}}</p>
-              <p>Duration: {{ getDuration(note.startDate,note.endDate)}} days</p>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      </div>
-    </div>
+                        <div class="card-content">
+                          <div class="circle-wrapper">
+                            <div class="circle">{{ note.id }}</div>
+                            <p class="note-title"><b>{{ note.title }}</b></p>
+                          </div>
+                          <div class="note-details">
+                            <p class="note-summary">{{ note.summary }}</p>
+                            <br>
+                            <p>Start Date: {{ timestampToDate(note.startDate) | date: 'dd/MM/yyyy' }}</p>
+                            <p>Duration: {{ getDuration(note.startDate, note.endDate) }} days</p>
+                          </div>
+                        </div>
+                      </mat-card-content>
+                    </mat-card>
+                  </ng-container>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-container>
+        <ng-template #singleLabelRow>
+          <tr [style.height.px]="calculateRowHeight(selectedLabel)" >
+            <td>{{ selectedLabelName }}</td>
+            <ng-container *ngFor="let day of displayedWeek">
+              <td>
+                <div class="notes">
+                  <ng-container *ngFor="let note of getNotesByLabelAndDay(selectedLabel, day); let i = index;">
+                    <mat-card class="note-card" (click)="openEditDialog(note)"  [style.top.px]="(i * 10)-70" [style.left.px]="i * 10">
+                      <mat-card-content>
+
+                        <div class="card-content">
+                          <div class="circle-wrapper">
+                            <div class="circle">{{ note.id }}</div>
+                            <p class="note-title"><b>{{ note.title }}</b></p>
+                          </div>
+                          <div class="note-details">
+                            <p class="note-summary">{{ note.summary }}</p>
+                            <br>
+                            <p>Start Date: {{ timestampToDate(note.startDate) | date: 'dd/MM/yyyy' }}</p>
+                            <p>Duration: {{ getDuration(note.startDate, note.endDate) }} days</p>
+                          </div>
+                        </div>
+                      </mat-card-content>
+                    </mat-card>
+                  </ng-container>
+                </div>
+              </td>
+            </ng-container>
+          </tr>
+        </ng-template>
+      </tbody>
+    </table>
   </div>
-</div>
+</ng-container>
 
 <mat-dialog-content *ngIf="selectedNote">
-  <!-- Edit dialog content goes here -->
-  asdf
 </mat-dialog-content>
 
 <app-progress-spiner [displayProgressSpinner]="loading"></app-progress-spiner>

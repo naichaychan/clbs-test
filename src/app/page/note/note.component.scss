@@ -1,56 +1,138 @@
-/* styles.css */
 
-/* Global styles */
-body, html {
-  margin: 0;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  height: 100%;
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #ccc;
 }
 
 .spacer {
-  flex: 1;
+  flex-grow: 1;
 }
 
-/* Card styles */
-.note-card {
-  width: 300px;
-  margin: 10px;
-}
-
-.label-card {
-  margin-bottom: 20px;
-}
-
-/* Edit dialog styles */
 mat-dialog-content {
   max-width: 400px;
   padding: 20px;
 }
 
-/* Optional: Add your custom styles here */
-.circle-wrapper {
-  display: flex;
-  align-items: center;
-}
-
-.circle {
-  width: 25px; /* Adjust as needed */
-  height: 25px; /* Adjust as needed */
-  border-radius: 50%;
-  background-color: white;
-  color: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid black; /* Black circle border */
-  margin-right: 10px; /* Adjust as needed */
-}
-
-.circle + p {
-  margin: 0;
-}
 
 p{
   margin-bottom: 0px;
+}
+
+
+.calendar-wrapper {
+  max-height: 800px;
+  max-width: 1000px;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.calendar {
+  width: 100%;
+  border-collapse: collapse;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.calendar th,
+.calendar td {
+  padding: 8px;
+  border: 1px solid #ccc;
+  min-width: 200px;
+}
+
+.notes {
+  position: relative;
+}
+
+.note-card {
+  position: absolute;
+  width: 200px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.418);
+  transition: box-shadow 0.3s;
+  top: -100px;
+  z-index: 1;
+  font-size: 0.9em;
+}
+
+.note-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.616);
+  z-index: 999;
+}
+
+.note-card .circle-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.note-card .circle {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background-color: #007bff;
+  border: 2px solid black;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.note-details {
+  flex-grow: 1;
+}
+
+.note-summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-height: 3.6em;
+  line-height: 1.2em;
+}
+
+.note-card:hover .note-summary {
+  overflow: auto;
+  text-overflow: unset;
+  white-space: initial;
+  max-height: 100%;
+  line-height: 1.2em;
+}
+
+@media screen and (max-width: 1680px) {
+  .calendar {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .note-card {
+    width: 160px;
+    font-size: 0.8em;
+  }
+}
+
+@media screen and (min-width: 1681px) {
+  .calendar {
+    width: 1680px;
+    margin: 0 auto;
+  }
+  .note-card {
+    width: 200px;
+    font-size: 0.9em;
+  }
+}
+@media screen and (max-width: 768px) {
+  .note-card {
+    width: 120px;
+    font-size: 0.8em;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .note-card {
+    width: 100px;
+    font-size: 0.4em;
+  }
 }

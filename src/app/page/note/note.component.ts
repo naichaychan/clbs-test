@@ -3,6 +3,7 @@ import { NoteService } from '../../service/data/note/note.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Note, NoteLabel } from '../../service/data/note/note.model';
 import { EditDialogComponent } from '../../component/note/edit-dialog/edit-dialog.component';
+import { CommonService } from '../../service/common/common.service';
 
 @Component({
   selector: 'app-note',
@@ -16,41 +17,49 @@ export class NoteComponent implements OnInit {
   noteLabels: NoteLabel[] = [];
   selectedNote: Note | null = null;
   loading = false;
+  displayedWeek: Date[] = [];
+  selectedLabelName: string = 'All';
 
-  constructor(
+  constructor(private commonService: CommonService,
     private noteService: NoteService,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
+    let startDate = new Date('01/01/2022');
+    this.displayedWeek = this.getWeekDates(startDate);
     this.getNotes();
   }
 
   async getNotes() {
     this.loading = true;
-    try {
-      this.notes = await (await this.noteService.getNotes()).toPromise();
+    await (await this.noteService.getNotes()).toPromise()
+    .then(data=>{
+      this.notes = data;
       this.getNoteLabels();
-    } catch (error) {
-      console.error('Error fetching notes:', error);
-    } finally {
+    })
+    .catch(error =>{
+      this.commonService.Alert('Error fetching notes:', error);
+    })
+    .finally(()=>{
       this.loading = false;
-    }
+    });
   }
 
   async getNoteLabels() {
     this.loading = true;
-    try {
-      this.noteLabels = await (await this.noteService.getNoteLabels()).toPromise();
-    } catch (error) {
-      console.error('Error fetching note labels:', error);
-    } finally {
-      this.loading = false;
-    }
-  }
 
-  getNotesByLabel(label: number): Note[] {
-    return this.selectedLabel === -1 ? this.notes : this.notes.filter(note => note.labels?.includes(this.selectedLabel));
+    await (await this.noteService.getNoteLabels()).toPromise()
+    .then(data=>{
+      this.noteLabels = data;
+    })
+    .catch(error =>{
+      this.commonService.Alert('Error fetching note labels:', error);
+    })
+    .finally(()=>{
+      this.loading = false;
+    });
+
   }
 
   openEditDialog(note: Note) {
@@ -62,9 +71,7 @@ export class NoteComponent implements OnInit {
   }
 
   saveNote() {
-    // Implement logic to save edited note
     console.log('Saving note:', this.selectedNote);
-    // Clear selected note after saving
     this.selectedNote = null;
   }
 
@@ -82,7 +89,6 @@ export class NoteComponent implements OnInit {
       }
 
       let weekdays = 0;
-      // Iterate over each day between the two dates
       const currentDate = new Date(date1);
       while (currentDate <= date2) {
         const dayOfWeek = currentDate.getDay();
@@ -96,8 +102,7 @@ export class NoteComponent implements OnInit {
     return 0;
   }
 
-  // Function to get an array of days in the current week
-  get daysInWeek() {
+  daysInWeek() {
     const currentDate = new Date();
     const daysInWeek = [];
     for (let i = 0; i < 7; i++) {
@@ -107,11 +112,78 @@ export class NoteComponent implements OnInit {
     return daysInWeek;
   }
 
-  // Function to get notes for a specific label and day
-  getNotesByLabelAndDay(label: number, day: string): Note[] {
-    return this.getNotesByLabel(label).filter(note => {
-      const noteDay = new Date(note.startDate * 1000).toLocaleDateString('en-US', { weekday: 'long' });
-      return noteDay === day;
-    });
+  getNotesByLabelAndDay(labelId: number, day: Date): Note[] {
+    // Filter notes based on labelId and day
+    if (labelId == -1) {
+      return this.notes.filter(note =>
+        this.isSameDay(new Date(note.startDate * 1000), day)
+      );
+    } else {
+      return this.notes.filter(note =>
+        note.labels.includes(labelId) &&
+        this.isSameDay(new Date(note.startDate * 1000), day)
+      );
+    }
   }
+
+  isSameDay(date1: Date, date2: Date): boolean {
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  }
+
+fetchPreviousWeek() {
+    const firstDateOfWeek = this.displayedWeek[0];
+    const previousWeekFirstDate = new Date(firstDateOfWeek);
+    previousWeekFirstDate.setDate(previousWeekFirstDate.getDate() - 7);
+    this.displayedWeek = this.getWeekDates(previousWeekFirstDate);
+  }
+
+  fetchNextWeek() {
+    const lastDateOfWeek = this.displayedWeek[this.displayedWeek.length - 1];
+    const nextWeekFirstDate = new Date(lastDateOfWeek);
+    nextWeekFirstDate.setDate(nextWeekFirstDate.getDate() + 1);
+    this.displayedWeek = this.getWeekDates(nextWeekFirstDate);
+  }
+
+  getWeekDates(startDate: Date): Date[] {
+    const dates: Date[] = [];
+    const currentDate = new Date(startDate);
+
+    for (let i = 0; i < 7; i++) { // Loop for 5 days to exclude weekends
+      const nextDay = new Date(currentDate);
+      nextDay.setDate(nextDay.getDate() + i);
+      if (nextDay.getDay() !== 0 && nextDay.getDay() !== 6) { // Exclude Sunday (0) and Saturday (6)
+        dates.push(new Date(nextDay));
+      }
+    }
+
+    return dates;
+  }
+
+
+
+  onLabelChange() {
+    if (this.selectedLabel == -1) {
+      this.selectedLabelName = 'All';
+    } else {
+      const selectedLabel = this.noteLabels.find(label => label.id === this.selectedLabel);
+      console.log(selectedLabel);
+      this.selectedLabelName = selectedLabel ? selectedLabel.text : 'Unknown';
+    }
+
+    console.log(this.selectedLabel);
+  }
+
+  calculateRowHeight(labelID: number): number {
+    const notesForLabel = this.notes.filter(note => note.labels.includes(labelID));
+    const numCards = notesForLabel.length;
+    // Set a minimum height for the row, adjust as needed
+    const minHeight = 100;
+    // Calculate the height based on the number of cards
+    return minHeight + numCards * 10; // Adjust the multiplier based on the desired card height
+  }
+
 }

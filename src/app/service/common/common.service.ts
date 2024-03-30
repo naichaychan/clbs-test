@@ -22,7 +22,7 @@ export class CommonService {
     horizontalPosition: 'right',
     verticalPosition: 'top'
     }
-    this._snackBar.open(title,'Close',config);
+    this._snackBar.open(title+','+message,'Close',config);
   }
 
 }
