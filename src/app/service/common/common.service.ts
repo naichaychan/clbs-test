@@ -18,11 +18,12 @@ export class CommonService {
     let config:MatSnackBarConfig = {
     announcementMessage: title,
     duration: 6000,
-    direction: 'rtl',
+    direction: 'ltr',
     horizontalPosition: 'right',
-    verticalPosition: 'top'
+    verticalPosition: 'top',
+    panelClass: ['mat-'+color]
     }
-    this._snackBar.open(title+','+message,'Close',config);
+    this._snackBar.open(title+','+message,'X',config);
   }
 
 }

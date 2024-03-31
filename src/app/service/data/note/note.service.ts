@@ -22,10 +22,8 @@ export class NoteService {
   }
 
   async updateNote(noteID:number,noteDetail:Note): Promise<Observable<any>> {
-    const reqData={
-      noteDetail
-    };
-    return this.httpService.put(this.urlNote+noteID, reqData);
+    const reqData=noteDetail;
+    return this.httpService.put(this.urlNote+'1', reqData);
   }
 
 }

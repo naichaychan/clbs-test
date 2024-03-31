@@ -31,10 +31,10 @@ export class HttpService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    let errMsg = 'Something bad happened; please try again later.';
+    let errMsg = error.message;
     if(error.name === 'HttpErrorResponse')
     {
-      this.commonService.Alert('Network error','Can\'t connect to server','danger');
+      this.commonService.Alert('Network error','Can\'t connect to server','warn');
     }
     if (error.status === 0) {
       console.error('An error occurred:', error.error);

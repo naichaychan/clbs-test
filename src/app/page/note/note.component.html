@@ -25,7 +25,7 @@
       <tbody>
         <ng-container *ngIf="selectedLabel == -1; else singleLabelRow">
           <tr  [style.height.px]="calculateRowHeight(label.id)" *ngFor="let label of noteLabels;let r = index">
-            <td>{{ label.text }}</td>
+            <td >{{ label.text }}</td>
             <ng-container *ngFor="let day of displayedWeek">
               <td>
                 <div class="notes">
@@ -87,8 +87,5 @@
     </table>
   </div>
 </ng-container>
-
-<mat-dialog-content *ngIf="selectedNote">
-</mat-dialog-content>
 
 <app-progress-spiner [displayProgressSpinner]="loading"></app-progress-spiner>

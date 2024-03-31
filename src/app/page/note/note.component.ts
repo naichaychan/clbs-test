@@ -29,6 +29,7 @@ export class NoteComponent implements OnInit {
     let startDate = new Date('01/01/2022');
     this.displayedWeek = this.getWeekDates(startDate);
     this.getNotes();
+    this.getNoteLabels();
   }
 
   async getNotes() {
@@ -36,10 +37,9 @@ export class NoteComponent implements OnInit {
     await (await this.noteService.getNotes()).toPromise()
     .then(data=>{
       this.notes = data;
-      this.getNoteLabels();
     })
     .catch(error =>{
-      this.commonService.Alert('Error fetching notes:', error);
+      this.commonService.Alert('Error fetching notes:', error.msg,'warn');
     })
     .finally(()=>{
       this.loading = false;
@@ -54,26 +54,49 @@ export class NoteComponent implements OnInit {
       this.noteLabels = data;
     })
     .catch(error =>{
-      this.commonService.Alert('Error fetching note labels:', error);
+      this.commonService.Alert('Error fetching note labels:', error.msg,'warn');
     })
     .finally(()=>{
       this.loading = false;
     });
 
   }
+  async updateNote(note:Note) {
+    this.loading = true;
+
+    await (await this.noteService.updateNote(note.id,note)).toPromise()
+    .then(data=>{
+      this.selectedNote = data;
+    })
+    .catch(error =>{
+      console.log(error);
+      this.commonService.Alert('Error update note detial:', error.msg,'warn');
+    })
+    .finally(()=>{
+      this.loading = false;
+      this.getNotes();
+    });
+
+  }
 
   openEditDialog(note: Note) {
     this.selectedNote = note;
-    this.dialog.open(EditDialogComponent, {
+    console.log("=========================================");
+    console.log(note);
+    const dialogRef = this.dialog.open(EditDialogComponent, {
       width: '400px',
-      data: { note: this.selectedNote }
+      data: { note: this.selectedNote, labels: this.noteLabels }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result.data);
+      note = result.data;
+      if(result?.event === 'Save'){
+        this.updateNote(note);
+      }
     });
   }
 
-  saveNote() {
-    console.log('Saving note:', this.selectedNote);
-    this.selectedNote = null;
-  }
 
   timestampToDate(timestamp?: number): Date {
     return timestamp ? new Date(timestamp * 1000) : new Date();
@@ -134,7 +157,7 @@ export class NoteComponent implements OnInit {
     );
   }
 
-fetchPreviousWeek() {
+  fetchPreviousWeek() {
     const firstDateOfWeek = this.displayedWeek[0];
     const previousWeekFirstDate = new Date(firstDateOfWeek);
     previousWeekFirstDate.setDate(previousWeekFirstDate.getDate() - 7);

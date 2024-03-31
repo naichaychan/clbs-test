@@ -23,8 +23,8 @@ p{
 
 
 .calendar-wrapper {
-  max-height: 800px;
-  max-width: 1000px;
+  // max-height: 800px;
+  // max-width: 1000px;
   overflow-x: auto;
   overflow-y: auto;
 }
@@ -42,7 +42,9 @@ p{
   border: 1px solid #ccc;
   min-width: 200px;
 }
-
+.calendar-wrapper table td:first-child {
+  text-align: center;
+}
 .notes {
   position: relative;
 }
