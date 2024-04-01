@@ -88,20 +88,35 @@ export class NoteComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if(result?.event === 'Save'){
-        this.selectedNote = result.data;
 
-        this.notes.forEach(item=>{
-          if(item.id == this.selectedNote.id)
-          {
-            item.title = this.selectedNote.title;
-            item.labels = this.selectedNote.labels;
-            item.startDate = this.selectedNote.startDate;
-            item.endDate = this.selectedNote.endDate;
-            item.summary = this.selectedNote.summary;
-          }
-        })
-        console.log(this.selectedNote);
-        this.updateNote(this.selectedNote);
+        let tempNote = result.data;
+        let countStack = 0;
+        tempNote.labels.forEach((xlabel: number) => {
+          this.getNotesByLabelAndDay(xlabel, this.timestampToDate(tempNote.startDate)).forEach(stack=>{
+            countStack++;
+          });
+        });
+        if(countStack < 3)
+        {
+          this.selectedNote = tempNote;
+
+          this.notes.forEach(item=>{
+            if(item.id == this.selectedNote.id)
+            {
+              item.title = this.selectedNote.title;
+              item.labels = this.selectedNote.labels;
+              item.startDate = this.selectedNote.startDate;
+              item.endDate = this.selectedNote.endDate;
+              item.summary = this.selectedNote.summary;
+            }
+          })
+          console.log(this.selectedNote);
+          this.updateNote(this.selectedNote);
+        }
+        else
+        {
+          this.commonService.Alert('Update Note Error', 'Maximum stack in day (3)','warn');
+        }
       }
     });
   }
@@ -216,6 +231,11 @@ export class NoteComponent implements OnInit {
     const minHeight = 100;
     // Calculate the height based on the number of cards
     return minHeight + numCards * 10; // Adjust the multiplier based on the desired card height
+  }
+
+
+  toggleDarkMode(isDarkMode: boolean){
+    this.commonService.toggleDarkMode(isDarkMode);
   }
 
 }

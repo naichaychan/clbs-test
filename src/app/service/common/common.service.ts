@@ -12,6 +12,7 @@ import {
 })
 export class CommonService {
 
+  private darkMode = false;
   constructor(private _snackBar: MatSnackBar) { }
 
   async Alert(title: string, message: string, color: string='dark') {
@@ -26,4 +27,12 @@ export class CommonService {
     this._snackBar.open(title+','+message,'X',config);
   }
 
+
+  toggleDarkMode(isDarkMode: boolean) {
+    if (isDarkMode) {
+      document.body.classList.add('dark-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
+    }
+  }
 }

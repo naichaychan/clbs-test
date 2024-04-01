@@ -2,3 +2,27 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+/* Dark Theme Styles */
+.dark-theme {
+  background-color: #333333;
+  color: #ffffff;
+  .note-card {
+    background-color: #999999!important; // Light mode background color
+    color: #000000; // Light mode text color
+  }
+
+  .circle {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #3f51b5!important;
+    border: 2px solid rgb(255, 255, 255);
+    color: #ffffff!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 8px;
+  }
+}
+
+

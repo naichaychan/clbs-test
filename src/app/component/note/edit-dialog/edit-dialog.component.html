@@ -9,6 +9,7 @@
     <textarea matInput
     maxlength="250"
     [(ngModel)]="note.summary"></textarea>
+    <mat-hint>{{note.summary.length}} / 250</mat-hint>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Sart Date</mat-label>
@@ -31,7 +32,7 @@
           </button>
         </mat-chip-row>
     </mat-chip-grid>
-    <input placeholder="Add Label..." #labelInput 
+    <input placeholder="Add Label..." #labelInput
       [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
       (matChipInputTokenEnd)="add($event)"
@@ -39,7 +40,7 @@
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addLabel($event)">
         <mat-option *ngFor="let item of label ; trackBy: trackByFn" [value]="item.text">{{item.text}}</mat-option>
       </mat-autocomplete>
-      
+
   </mat-form-field>
 </div>
 <div mat-dialog-actions >

@@ -10,6 +10,12 @@
   </mat-form-field>
   <button mat-button class="week-switch" (click)="fetchPreviousWeek()">Previous Week</button>
   <button mat-button class="week-switch" (click)="fetchNextWeek()">Next Week</button>
+  <mat-slide-toggle
+          color="warn"
+          (change)="toggleDarkMode($event.checked)"
+  >
+        Dark Mode
+  </mat-slide-toggle>
 </mat-toolbar>
 <ng-container>
   <div class="calendar-wrapper">
