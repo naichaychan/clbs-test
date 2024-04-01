@@ -17,7 +17,7 @@ export class HttpService {
     });
     const options = { headers: headers, withCredintials: false };
     const url = environment.baseAPI + serviceName;
-    return this.http.put(url, data, options).pipe(timeout(99999),retry(0),catchError((error: HttpErrorResponse)=>this.handleError(error)));
+    return this.http.post(url, data, options).pipe(timeout(99999),retry(0),catchError((error: HttpErrorResponse)=>this.handleError(error)));
   }
 
   async get(serviceName: string) {

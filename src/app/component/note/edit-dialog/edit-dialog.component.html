@@ -8,7 +8,7 @@
     <mat-label>Summary</mat-label>
     <textarea matInput
     maxlength="250"
-    [value]="note.summary"></textarea>
+    [(ngModel)]="note.summary"></textarea>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Sart Date</mat-label>
@@ -21,12 +21,26 @@
     <mat-label>Duration</mat-label>
     <input type="number" step="1" min="1" matInput [(ngModel)]="duration">
   </mat-form-field>
-</div>
-<div *ngIf="note.labels.length > 0" class="chip-container">
-  <mat-chip *ngFor="let item of note.labels" removable (removed)="removeItem(item)">
-    {{ getLabelName(item) }}
-    <mat-icon matChipRemove>cancel</mat-icon>
-  </mat-chip>
+  <mat-form-field>
+    <mat-label>Label</mat-label>
+    <mat-chip-grid #chipGrid aria-label="Label selection">
+        <mat-chip-row *ngFor="let item of note.labels;" (removed)="removeLabel(item)">
+          {{getLabelName(item)}}
+          <button matChipRemove [attr.aria-label]="'remove ' + getLabelName(item)">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+    </mat-chip-grid>
+    <input placeholder="Add Label..." #labelInput 
+      [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="add($event)"
+      />
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addLabel($event)">
+        <mat-option *ngFor="let item of label ; trackBy: trackByFn" [value]="item.text">{{item.text}}</mat-option>
+      </mat-autocomplete>
+      
+  </mat-form-field>
 </div>
 <div mat-dialog-actions >
   <button mat-button (click)="doAction()"  mat-flat-button color="primary">Save</button>

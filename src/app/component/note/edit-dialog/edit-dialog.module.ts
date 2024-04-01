@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatChipsModule} from '@angular/material/chips';
+import {MatIconModule} from '@angular/material/icon';
+import { MatAutocompleteModule} from '@angular/material/autocomplete';
 
 
 @NgModule({
@@ -26,7 +28,9 @@ import { MatChipsModule} from '@angular/material/chips';
     MatDatepickerModule,
     ReactiveFormsModule,
     JsonPipe,
-    MatChipsModule
+    MatChipsModule,
+    MatIconModule,
+    MatAutocompleteModule
   ],
   declarations: [
     EditDialogComponent

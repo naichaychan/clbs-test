@@ -15,7 +15,7 @@ export class NoteComponent implements OnInit {
   selectedLabel: number = -1;
   notes: Note[] = [];
   noteLabels: NoteLabel[] = [];
-  selectedNote: Note | null = null;
+  selectedNote!: Note ;
   loading = false;
   displayedWeek: Date[] = [];
   selectedLabelName: string = 'All';
@@ -81,18 +81,27 @@ export class NoteComponent implements OnInit {
 
   openEditDialog(note: Note) {
     this.selectedNote = note;
-    console.log("=========================================");
-    console.log(note);
     const dialogRef = this.dialog.open(EditDialogComponent, {
       width: '400px',
       data: { note: this.selectedNote, labels: this.noteLabels }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result.data);
-      note = result.data;
       if(result?.event === 'Save'){
-        this.updateNote(note);
+        this.selectedNote = result.data;
+
+        this.notes.forEach(item=>{
+          if(item.id == this.selectedNote.id)
+          {
+            item.title = this.selectedNote.title;
+            item.labels = this.selectedNote.labels;
+            item.startDate = this.selectedNote.startDate;
+            item.endDate = this.selectedNote.endDate;
+            item.summary = this.selectedNote.summary;
+          }
+        })
+        console.log(this.selectedNote);
+        this.updateNote(this.selectedNote);
       }
     });
   }
