@@ -91,12 +91,23 @@ export class NoteComponent implements OnInit {
 
         let tempNote = result.data;
         let countStack = 0;
+        let isOverStack = false;
+        let maxStack = 3;
         tempNote.labels.forEach((xlabel: number) => {
+          countStack = 0;
           this.getNotesByLabelAndDay(xlabel, this.timestampToDate(tempNote.startDate)).forEach(stack=>{
-            countStack++;
+            if(stack.id != tempNote.id)
+            {
+              countStack++;
+            }
           });
+
+          if(countStack >= maxStack)
+          {
+            isOverStack = true;
+          }
         });
-        if(countStack < 3)
+        if(!isOverStack)
         {
           this.selectedNote = tempNote;
 
@@ -111,7 +122,7 @@ export class NoteComponent implements OnInit {
             }
           })
           console.log(this.selectedNote);
-          this.updateNote(this.selectedNote);
+          // this.updateNote(this.selectedNote);
         }
         else
         {
